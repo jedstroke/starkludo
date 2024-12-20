@@ -35,6 +35,15 @@ export const BoardToPos = (arr: number[]) => {
   return newArr;
 };
 
+export const loadFromCache = async (url: string): Promise<Blob> => {
+  const cache = await caches.open('game-assets-cache-v1');
+  const response = await cache.match(url);
+  if (response) return response.blob();
+  const freshResponse = await fetch(url);
+  await cache.put(url, freshResponse.clone());
+  return freshResponse.blob();
+};
+
 export const PosToBoard = (arr: number[]) => {
   const newArr: number[] = arr?.map((val, i) => {
     const color: number = Math.floor(i / 4);

@@ -12,8 +12,28 @@
   font-size: 15px;
 }
 
+.rowdies-light {
+  font-family: "Rowdies", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.rowdies-regular {
+  font-family: "Rowdies", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.rowdies-bold {
+  font-family: "Rowdies", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
 /* Custom Scrollbar */
 * {
+  font-family: "Rowdies", serif;
   scrollbar-width: thin;
   /* For Firefox */
   scrollbar-color: rgb(203, 129, 141) #1c1c1c;
@@ -26,13 +46,13 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: #1c1c1c;
+  background: #854D15;
   /* Dark background */
   border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgb(203, 129, 141);
+  background-color: #854D15;
   /* Bright accent color */
   border-radius: 10px;
   border: 2px solid #1c1c1c;
@@ -40,7 +60,7 @@
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(203, 129, 141);
+  background-color: #854D15;
   /* Lighter shade on hover */
 }
 
