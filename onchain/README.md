@@ -1,62 +1,68 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/mark-dark.svg">
-  <img alt="Dojo logo" align="right" width="120" src=".github/mark-light.svg">
-</picture>
+## StarkLudo OnChain
 
-<a href="https://twitter.com/dojostarknet">
-<img src="https://img.shields.io/twitter/follow/dojostarknet?style=social"/>
-</a>
-<a href="https://github.com/dojoengine/dojo">
-<img src="https://img.shields.io/github/stars/dojoengine/dojo?style=social"/>
-</a>
+This is the onchain contracts for StakLudo, a Ludo game built on Starknet.
 
-[![discord](https://img.shields.io/badge/join-dojo-green?logo=discord&logoColor=white)](https://discord.gg/PwDa2mKhR4)
-[![Telegram Chat][tg-badge]][tg-url]
+### Prerequisites
 
-[tg-badge]: https://img.shields.io/endpoint?color=neon&logo=telegram&label=chat&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fdojoengine
-[tg-url]: https://t.me/dojoengine
+Before setting up the onchain contracts, ensure you have the following installed:
 
-# Dojo Starter: Official Guide
+* Node.js (v22 or later recommended)
+* npm (v10 or later)
+* pnpm
 
-The official Dojo Starter guide, the quickest and most streamlined way to get your Dojo provable game up and running. This guide will assist you with the initial setup, from cloning the repository to deploying your world.
+### Local Setup
+1. Install Dependencies
+   bash
+   ```
+   # Navigate to the client directory
+   cd onchain
 
-Read the full tutorial [here](https://book.dojoengine.org/tutorial/dojo-starter).
+   # Install dependencies using pnpm
+   pnpm install
+   ```
 
-## Running Locally
+2. Run Development Server
+   ## Running Locally using Dojo Starter: 
 
-#### Terminal one (Make sure this is running)
-```bash
-# Run Katana
-katana --disable-fee --allowed-origins "*"
-```
+   #### Terminal one (Make sure this is running)
+   ```bash
+   # Run Katana
+   katana --disable-fee --allowed-origins "*"
+   ```
 
-#### Terminal two
-```bash
-# Build the example
-sozo build
+   #### Terminal two
+   ```bash
+   # Build the example
+   sozo build
 
-# Migrate the example
-sozo migrate apply
+   # Migrate the example
+   sozo migrate
 
-# Start Torii
-torii --world 0x403b5f047b8c4797139e30801e310473d99ca6877d19e0f27506f353f8f70f7 --allowed-origins "*"
-```
+   # Start Torii
+   torii --world 0x403b5f047b8c4797139e30801e310473d99ca6877d19e0f27506f353f8f70f7 --allowed-origins "*"
+   ```
 
----
+   ```
+   bash
+   # Start the development server
+   pnpm dev
+   ```
 
-## Contribution
 
-This starter project is a constant work in progress and contributions are greatly appreciated!
+### Key Requirements
+* Ensure Katana and Torii servers are running before starting the client
+* Wallet connection is required to play the game
 
-1. **Report a Bug**
+### Troubleshooting
+* Make sure all prerequisites are installed
+* Verify network connections
+* Check that prerequisite are been setup properly
 
-   - If you think you have encountered a bug, and we should know about it, feel free to report it [here](https://github.com/dojoengine/dojo-starter/issues) and we will take care of it.
+### More Information
 
-2. **Request a Feature**
+* Website: https://starkludo.com
+* Full Documentation: https://book.starkludo.com
+* Dojo Documentation: https://book.dojoengine.org/tutorial/dojo-starter.
 
-   - You can also request for a feature [here](https://github.com/dojoengine/dojo-starter/issues), and if it's viable, it will be picked for development.
 
-3. **Create a Pull Request**
-   - It can't get better then this, your pull request will be appreciated by the community.
 
-Happy coding!

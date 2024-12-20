@@ -1,6 +1,5 @@
 mod systems {
     mod game_actions;
-    mod player_actions;
 }
 
 mod models {
@@ -9,8 +8,8 @@ mod models {
 }
 
 mod constants;
+mod errors;
 
 mod tests {
     mod test_game;
-    mod test_player;
 }

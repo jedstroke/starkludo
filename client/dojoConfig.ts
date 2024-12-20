@@ -1,4 +1,4 @@
-import manifest from "../onchain/manifests/dev/deployment/manifest.json";
+import manifest from "../onchain/manifest_dev.json";
 
 import { createDojoConfig } from "@dojoengine/core";
 

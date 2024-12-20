@@ -7,13 +7,12 @@ import {
 } from "@starknet-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { FaArrowAltCircleRight } from "react-icons/fa";
-import { useDojo } from "../../dojo/useDojo";
+import { useDojo } from "../../dojo/hooks/useDojo";
 import "../../styles/GameAccount.scss";
 import {
   convertHexToText,
   getGameProfilesFromAddress,
 } from "../../utils/helpers";
-import BurnerAccount from "./BurnerAccount";
 
 const ConnectWallet = () => {
   const { connectors, connect } = useConnect();
@@ -39,8 +38,6 @@ const ConnectWallet = () => {
       <div onClick={() => account.create()} className="wallet-name-burner">
         <p> {account?.isDeploying ? "Deploying Burner..." : "Create Burner"}</p>
       </div>
-
-      {account.count > 0 && <BurnerAccount />}
     </div>
   );
 };
@@ -165,8 +162,6 @@ const GameAccount = () => {
     disconnect();
   };
 
-  const { system } = useDojo();
-
   const addGameProfile = async () => {
     if (newProfileName === undefined || newProfileName?.length < 2) {
       alert("profile name must be greater than 2");
@@ -179,7 +174,6 @@ const GameAccount = () => {
     }
 
     // await createGameProfile(newProfileName, account);
-    await system.createUsername(account, newProfileName);
     await setNewProfileName("");
 
     await getGameProfilesFromAddress(address, setGameProfiles);

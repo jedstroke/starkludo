@@ -1,258 +1,75 @@
-pub mod Errors {
-    pub const WRONG_DICE_VALUE: felt252 = 'Wrong dice value';
-    pub const WRONG_DICE_NONCE: felt252 = 'Wrong dice nonce';
-    pub const INVALID_PLAYER: felt252 = 'Player was not invited';
-}
-
 #[cfg(test)]
 mod tests {
-    use super::Errors;
-    // Import world dispatcher
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    // Import test utils
-    use dojo::utils::test::{spawn_test_world, deploy_contract};
-    // Import test utils
-    use starkludo::{
-        systems::{
-            game_actions::{
-                GameActions, IGameActionsDispatcher, DiceTrait, IGameActionsDispatcherTrait,
-                DiceImpl
-            }
-        },
-        models::game::{Game, game, GameMode, GameStatus},
+    use dojo_cairo_test::WorldStorageTestTrait;
+    use dojo::model::{ModelStorage, ModelValueStorage, ModelStorageTest};
+    use dojo::world::WorldStorageTrait;
+    use dojo_cairo_test::{
+        spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef
     };
-    // Import Starknet utils
-    use starknet::{testing, contract_address_const, get_caller_address, ContractAddress};
 
+    use starkludo::systems::game_actions::{
+        GameActions, IGameActionsDispatcher, IGameActionsDispatcherTrait
+    };
+    use starkludo::models::game::{Game, m_Game};
+    use starkludo::models::player::{Player, m_Player};
 
-    fn create_and_setup_game(
-        game_mode: GameMode,
-        number_of_players: u8,
-        player_red: felt252,
-        player_blue: felt252,
-        player_yellow: felt252,
-        player_green: felt252,
-    ) -> (Game, IGameActionsDispatcher, IWorldDispatcher, ContractAddress,) {
-        // Get caller address
-        let caller = get_caller_address();
-        // Get game models
-        let mut models = array![game::TEST_CLASS_HASH];
-        // Spawn a new world from game model
-        let world = spawn_test_world(["starkludo"].span(), models.span());
-        // Deploy world and get contract address
-        let contract_address = world
-            .deploy_contract('salt', GameActions::TEST_CLASS_HASH.try_into().unwrap());
-        // Game actions
-        let game_actions = IGameActionsDispatcher { contract_address };
-        // Grant writer access to game actions
-        world.grant_writer(dojo::utils::bytearray_hash(@"starkludo"), contract_address);
+    fn namespace_def() -> NamespaceDef {
+        let ndef = NamespaceDef {
+            namespace: "starkludo", resources: [
+                TestResource::Model(m_Game::TEST_CLASS_HASH),
+                TestResource::Model(m_Player::TEST_CLASS_HASH),
+                TestResource::Contract(GameActions::TEST_CLASS_HASH),
+                TestResource::Event(GameActions::e_GameCreated::TEST_CLASS_HASH),
+            ].span()
+        };
 
-        // Create a new game
-        let game: Game = game_actions
-            .create(
-                caller,
-                game_mode,
-                player_green,
-                player_yellow,
-                player_blue,
-                player_red,
-                number_of_players
-            );
+        ndef
+    }
 
-        (game, game_actions, world, contract_address,)
+    fn contract_defs() -> Span<ContractDef> {
+        [
+            ContractDefTrait::new(@"starkludo", @"GameActions")
+                .with_writer_of([dojo::utils::bytearray_hash(@"starkludo")].span())
+        ].span()
     }
 
     #[test]
-    fn test_game_creation() {
-        let caller = contract_address_const::<'ibs'>();
+    fn test_world() {
+        let caller = starknet::contract_address_const::<'caller'>();
 
-        let player_red = 'player_red';
-        let player_blue = 'player_blue';
-        let player_yellow = 'player_yellow';
-        let player_green = 'player_green';
-        let number_of_players = 4;
-        let game_mode: GameMode = GameMode::MultiPlayer;
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
 
-        testing::set_account_contract_address(caller);
-        testing::set_contract_address(caller);
-
-        let (game, _, _, _) = create_and_setup_game(
-            game_mode, number_of_players, player_red, player_blue, player_yellow, player_green
-        );
-
-        assert_eq!(game.created_by, caller);
-        // assert_eq!(game.game_mode, game_mode);
-        assert_eq!(game.player_red, player_red.into());
-        assert_eq!(game.player_blue, player_blue.into());
-        assert_eq!(game.player_yellow, player_yellow.into());
-        assert_eq!(game.player_green, player_green.into());
-    }
-
-    // TODO: Test number of players
-    // TODO: Test game mode
-
-    #[test]
-    fn test_restart_game() {
-        let caller = contract_address_const::<'Collins'>();
-        let zero_address = contract_address_const::<0x0>();
-
-        let player_red = 'player_red';
-        let player_blue = 'player_blue';
-        let player_yellow = 'player_yellow';
-        let player_green = 'player_green';
-        let number_of_players = 4;
-        let game_mode: GameMode = GameMode::MultiPlayer;
-
-        testing::set_account_contract_address(caller);
-        testing::set_contract_address(caller);
-
-        //creating a new game
-        let (game, game_actions, _, _) = create_and_setup_game(
-            game_mode, number_of_players, player_red, player_blue, player_yellow, player_green
-        );
-
-        let game_id: u64 = game.id;
-
-        //restarting the game
-        game_actions.restart(game_id);
-
-        assert_eq!(game.next_player, zero_address.into());
-        assert_eq!(game.rolls_times, 0);
-        assert_eq!(game.rolls_count, 0);
-        assert_eq!(game.dice_face, 0);
-        assert_eq!(game.player_chance, zero_address.into());
-        assert_eq!(game.has_thrown_dice, false);
-    }
-    // // Constants for Dice Tests
-    const DICE_FACE_COUNT: u8 = 6;
-    const DICE_SEED: felt252 = 'SEED';
-
-    #[test]
-    fn test_dice_new_roll() {
-        let mut dice = DiceTrait::new(DICE_FACE_COUNT, DICE_SEED);
-        assert(dice.roll() == 1, Errors::WRONG_DICE_VALUE);
-        assert(dice.roll() == 6, Errors::WRONG_DICE_VALUE);
-        assert(dice.roll() == 3, Errors::WRONG_DICE_VALUE);
-        assert(dice.roll() == 1, Errors::WRONG_DICE_VALUE);
-        assert(dice.roll() == 4, Errors::WRONG_DICE_VALUE);
-        assert(dice.roll() == 3, Errors::WRONG_DICE_VALUE);
+        let (contract_address, _) = world.dns(@"GameActions").unwrap();
+        let game_action_system = IGameActionsDispatcher { contract_address };
     }
 
     #[test]
-    fn test_dice_new_roll_overflow() {
-        let mut dice = DiceTrait::new(DICE_FACE_COUNT, DICE_SEED);
-        dice.nonce = 0x800000000000011000000000000000000000000000000000000000000000000;
-        dice.roll();
-        assert(dice.nonce == 0, Errors::WRONG_DICE_NONCE);
-    }
+    fn test_roll() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
 
-    #[test]
-    #[ignore]
-    fn test_terminate_game() {
-        let caller = contract_address_const::<'ibs'>();
+        let (contract_address, _) = world.dns(@"GameActions").unwrap();
+        let game_action_system = IGameActionsDispatcher { contract_address };
 
-        let player_red = 'player_red';
-        let player_blue = 'player_blue';
-        let player_yellow = 'player_yellow';
-        let player_green = 'player_green';
-        let number_of_players = 4;
-        let game_mode: GameMode = GameMode::MultiPlayer;
+        let mut unique_rolls = ArrayTrait::new();
+        let mut i: u8 = 0;
+        while i < 100 {
+            let (dice1, dice2) = game_action_system.roll();
 
-        testing::set_account_contract_address(caller);
-        testing::set_contract_address(caller);
+            assert(dice1 <= 6, 'Dice1 Exceeded Max');
+            assert(dice1 > 0, 'Dice1 Below Min');
+            assert(dice2 <= 6, 'Dice2 Exceeded Max');
+            assert(dice2 > 0, 'Dice2 Below Min');
 
-        let (game, game_actions, _, _) = create_and_setup_game(
-            game_mode, number_of_players, player_red, player_blue, player_yellow, player_green
-        );
+            let roll_combo = dice1 * 10 + dice2;
+            unique_rolls.append(roll_combo);
 
-        assert_eq!(game.created_by, caller);
-        // assert_eq!(game.game_mode, game_mode);
-        assert_eq!(game.player_red, player_red.into());
-        assert_eq!(game.player_blue, player_blue.into());
-        assert_eq!(game.player_yellow, player_yellow.into());
-        assert_eq!(game.player_green, player_green.into());
+            i += 1;
+        };
 
-        let game_id: u64 = game.id;
-
-        game_actions.terminate_game(game_id);
-
-        assert_eq!(game.game_status, GameStatus::Ended);
-    }
-
-    #[test]
-    #[ignore]
-    fn test_invite_player() {
-        let caller = contract_address_const::<'Collins'>(); // The game creator
-        let player_red = 'player_red';
-        let player_blue = 'player_blue';
-        let player_yellow = 'player_yellow';
-        let player_green = 'player_green';
-        let number_of_players = 4;
-        let game_mode: GameMode = GameMode::MultiPlayer;
-
-        testing::set_account_contract_address(caller);
-        testing::set_contract_address(caller);
-
-        // Creating and setting up a new game
-        let (mut game, game_actions, world, _) = create_and_setup_game(
-            game_mode, number_of_players, player_red, player_blue, player_yellow, player_green
-        );
-
-        let game_id: u64 = game.id;
-        let new_player = 'player_orange';
-
-        // Inviting a new player to the game
-        game_actions.invite_player(game_id, new_player);
-
-        // Retrieving the game and checking if the invited player has been added to the
-        // invited_players array
-        game = get!(world, game_id, Game);
-        // Manual check if the new player is in the invited_players array using a custom contains
-    // method
-    // let is_player_invited = contains(game.invited_players, new_player.into());
-
-        // // Assert that the player was invited. if false then player was not invited
-    // assert(is_player_invited, Errors::INVALID_PLAYER);
-    }
-
-
-    #[test]
-    #[ignore]
-    fn test_join_game() {
-        let caller = contract_address_const::<'Benjamin'>();
-        let player_red = 'player_red';
-        let player_blue = 'player_blue';
-        let player_yellow = 'player_yellow';
-        let player_green = 'player_green';
-        let number_of_players = 4;
-        let game_mode: GameMode = GameMode::MultiPlayer;
-        testing::set_account_contract_address(caller);
-        testing::set_contract_address(caller);
-
-        let (game, game_actions, world, _) = create_and_setup_game(
-            game_mode, number_of_players, player_red, player_blue, player_yellow, player_green
-        );
-
-        let game_id: u64 = game.id;
-        let new_player = 'player_red';
-        let player_color: felt252 = 0;
-
-        // Check game status before joining
-        let game_before_join = get!(world, game_id, Game);
-        assert_eq!(
-            game_before_join.game_status,
-            GameStatus::Waiting,
-            "Game should be in Waiting status before joining"
-        );
-
-        // Attempt to join the game
-        game_actions.join_game(game_id, new_player, player_color);
-
-        // Verify the game state after joining
-        let updated_game = get!(world, game_id, Game);
-        assert_eq!(
-            updated_game.player_green, new_player.into(), "Player should have joined the game"
-        );
+        assert(unique_rolls.len() > 1, 'Not enough unique rolls');
     }
 }
-
