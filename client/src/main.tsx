@@ -31,17 +31,17 @@ async function init() {
   }
 
 
-  // const setupResult = await setup(dojoConfig);
+  const setupResult = await setup(dojoConfig);
 
-  // !setupResult && <div>Loading....</div>;
+  !setupResult && <div>Loading....</div>;
 
   root.render(
     <React.StrictMode>
-      {/* <ApolloProvider client={apolloClient}>
-        <DojoProvider value={setupResult}> */}
+      <ApolloProvider client={apolloClient}>
+        <DojoProvider value={setupResult}>
       <App />
-      {/* </DojoProvider>
-      </ApolloProvider> */}
+      </DojoProvider>
+      </ApolloProvider>
     </React.StrictMode>
   );
 }
