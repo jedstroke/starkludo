@@ -1,10 +1,11 @@
-use core::num::traits::Zero;
 use starknet::{ContractAddress, get_block_timestamp, contract_address_const};
+use starkludo::models::player::{Player};
 
 // Represents the status of the game
 // Can either be Ongoing or Ended
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug)]
 pub enum GameStatus {
+    Pending,
     Ongoing,
     Waiting,
     Ended,
@@ -30,15 +31,14 @@ pub enum PiecePosition {
 #[dojo::model]
 pub struct Game {
     #[key]
-    pub id: u64, // Unique id of the game
-    pub created_by: ContractAddress, // Address of the game creator
+    pub id: usize, // Unique id of the game
+    pub created_by: felt252, // Address of the game creator
     pub game_status: GameStatus, // Status of the game
     pub game_mode: GameMode, // Mode of the game
     pub player_green: felt252, // Player contract address
     pub player_yellow: felt252, // Player contract address
     pub player_blue: felt252, // Player contract address
     pub player_red: felt252, // Player contract address
-    pub invited_players: Array<felt252>, // List of invited players
     pub winner_1: felt252, // First winner position 
     pub winner_2: felt252, // Second winner position
     pub winner_3: felt252, // Third winner position
@@ -70,8 +70,8 @@ pub struct Game {
 pub trait GameTrait {
     // Create and return a new game
     fn new(
-        id: u64,
-        created_by: ContractAddress,
+        id: usize,
+        created_by: felt252,
         game_mode: GameMode,
         player_red: felt252,
         player_blue: felt252,
@@ -85,8 +85,8 @@ pub trait GameTrait {
 
 impl GameImpl of GameTrait {
     fn new(
-        id: u64,
-        created_by: ContractAddress,
+        id: usize,
+        created_by: felt252,
         game_mode: GameMode,
         player_red: felt252,
         player_blue: felt252,
@@ -98,25 +98,12 @@ impl GameImpl of GameTrait {
         Game {
             id,
             created_by,
-            game_status: GameStatus::Ongoing,
+            game_status: GameStatus::Pending,
             game_mode,
-            player_green: match game_mode {
-                GameMode::SinglePlayer => zero_address.into(),
-                GameMode::MultiPlayer => player_green
-            },
-            player_yellow: match game_mode {
-                GameMode::SinglePlayer => zero_address.into(),
-                GameMode::MultiPlayer => player_yellow
-            },
-            player_blue: match game_mode {
-                GameMode::SinglePlayer => zero_address.into(),
-                GameMode::MultiPlayer => player_blue
-            },
-            player_red: match game_mode {
-                GameMode::SinglePlayer => zero_address.into(),
-                GameMode::MultiPlayer => player_red
-            },
-            invited_players: ArrayTrait::new(), // Initializing invited_players
+            player_green,
+            player_yellow,
+            player_blue,
+            player_red,
             next_player: zero_address.into(),
             winner_1: zero_address.into(),
             winner_2: zero_address.into(),

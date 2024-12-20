@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Row, Col } from "react-simple-flex-grid";
 import { GameContext } from "./context/game-context";
 import Ludo from "./components/Ludo";
@@ -9,7 +10,6 @@ import Alert from "./components/Alert";
 import Footer from "./components/Footer";
 import { chance } from "./hooks/utils";
 import "react-simple-flex-grid/lib/main.css";
-// import RestartGame from "./components/RestartGame";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { OptionsProps } from "./types";
@@ -27,8 +27,13 @@ import Multiplayer from "./components/ControlWindows/Multiplayer";
 import Leaderboard from "./components/ControlWindows/Leaderboard";
 import GameAccount from "./components/ControlWindows/GameAccount";
 import MobileResponsiveWarning from "./components/MobileResponsiveWarning";
+import { StarkludoSchemaType } from "./dojo/gen/models.gen";
+import { SDK } from "@dojoengine/sdk";
+import Settings from "./components/Settings";
 
-const App = () => {
+const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
+  console.log("SDK initialized:", sdk);
+
   const [activeWindow, setActiveWindow] = useState("");
   const [showMobileResponsiveWarning, setShowMobileResponsiveWarning] =
     useState(false);
@@ -78,7 +83,8 @@ const App = () => {
     if (options.gameIsOngoing) {
       if (options.winners.length === options.playersLength - 1) {
         toast(
-          `The game has ended. Player ${chance[options.winners[0]]
+          `The game has ended. Player ${
+            chance[options.winners[0]]
           } is the winner`
         );
         setGameOptions({
@@ -101,120 +107,135 @@ const App = () => {
   }, [options, setGameOptions]);
 
   return (
-    <>
+    <Router>
       {showMobileResponsiveWarning ? (
         <MobileResponsiveWarning />
       ) : (
         <>
-          <StarknetProvider>
-          <GameContext.Provider
-            value={{
-              gameState: gameState,
-              setGameData: setGameData,
-              options: options,
-              setGameOptions: setGameOptions,
-            }}
-          >
-            <BoardContext.Provider value={{ board, toggleBoard }}>
-              <ColorProvider>
-                <DiceProvider>
-                  <div className="game-behaviour-warning">
-                    <FiAlertTriangle size={20} />
-                    StarkLudo is still in active development{" "}
-                    <FiZap color="yellow" size={20} />
-                  </div>
-                  <div className="layout-container">
-                    <div className="layout-stretch-lock">
-                    <div className="mobile-header">
-                      <Header />
-                    </div>
-                    <Row gutter={0}>
-                      <Col xs={12} sm={12} md={7} lg={7}>
-                        <Ludo />
-                      </Col>
-                      <Col xs={12} sm={12} md={5} lg={5}>
-                        <div className="sidebar">
-                          <div>
-                            <div>
-                              <div className="desktop-header">
+          <Routes>
+            {/* Settings Route */}
+            <Route path="/settings" element={<Settings />} />
+
+            {/* Home Page Route */}
+            <Route
+              path="/"
+              element={
+                <StarknetProvider>
+                  <GameContext.Provider
+                    value={{
+                      gameState: gameState,
+                      setGameData: setGameData,
+                      options: options,
+                      setGameOptions: setGameOptions,
+                    }}
+                  >
+                    <BoardContext.Provider value={{ board, toggleBoard }}>
+                      <ColorProvider>
+                        <DiceProvider>
+                          <div className="game-behaviour-warning">
+                            <FiAlertTriangle size={20} />
+                            StarkLudo is still in active development{" "}
+                            <FiZap color="yellow" size={20} />
+                          </div>
+                          <div className="layout-container">
+                            <div className="layout-stretch-lock">
+                              <div className="mobile-header">
                                 <Header />
                               </div>
-                              <Menu />
-                              {/* <RestartGame /> */}
-                              <Alert />
-                              <Dice />
-                              {activeWindow === "account" ? (
-                                <ControlWindowLayout
-                                  toggle={() => setActiveWindow("")}
-                                  title="PROFILE"
-                                  subtitle="Your Profile Information"
-                                >
-                                  <GameAccount />
-                                </ControlWindowLayout>
-                              ) : null}
+                              <Row gutter={0}>
+                                <Col xs={12} sm={12} md={7} lg={7}>
+                                  <Ludo />
+                                </Col>
+                                <Col xs={12} sm={12} md={5} lg={5}>
+                                  <div className="sidebar">
+                                    <div>
+                                      <div>
+                                        <div className="desktop-header">
+                                          <Header />
+                                        </div>
+                                        <Menu />
+                                        {/* <RestartGame /> */}
+                                        <Alert />
+                                        <Dice />
+                                        {activeWindow === "account" ? (
+                                          <ControlWindowLayout
+                                            toggle={() => setActiveWindow("")}
+                                            title="PROFILE"
+                                            subtitle="Your Profile Information"
+                                          >
+                                            <GameAccount />
+                                          </ControlWindowLayout>
+                                        ) : null}
 
-                              {activeWindow === "leaderboard" ? (
-                                <ControlWindowLayout
-                                  toggle={() => setActiveWindow("")}
-                                  title="LEADERBOARD"
-                                  subtitle="Global Player Rankings"
-                                >
-                                  <Leaderboard />
-                                </ControlWindowLayout>
-                              ) : null}
+                                        {activeWindow === "leaderboard" ? (
+                                          <ControlWindowLayout
+                                            toggle={() => setActiveWindow("")}
+                                            title="LEADERBOARD"
+                                            subtitle="Global Player Rankings"
+                                          >
+                                            <Leaderboard />
+                                          </ControlWindowLayout>
+                                        ) : null}
 
-                              {activeWindow === "multiplayer" ? (
-                                <ControlWindowLayout
-                                  toggle={() => setActiveWindow("")}
-                                  title="MULTIPLAYER"
-                                  subtitle="Choose An Account To Play With"
-                                >
-                                  <Multiplayer />
-                                </ControlWindowLayout>
-                              ) : null}
+                                        {activeWindow === "multiplayer" ? (
+                                          <ControlWindowLayout
+                                            toggle={() => setActiveWindow("")}
+                                            title="MULTIPLAYER"
+                                            subtitle="Choose An Account To Play With"
+                                          >
+                                            <Multiplayer />
+                                          </ControlWindowLayout>
+                                        ) : null}
 
-                              {activeWindow === "toolbox" ? (
-                                <ControlWindowLayout
-                                  toggle={() => setActiveWindow("")}
-                                  title="TOOLBOX"
-                                  subtitle="Get All Your Items And Settings Done"
-                                >
-                                  <Toolbox
-                                    activeCategory={activeCategory}
-                                    onCategoryClick={handleCategoryClick}
-                                  />
-                                </ControlWindowLayout>
-                              ) : null}
+                                        {activeWindow === "toolbox" ? (
+                                          <ControlWindowLayout
+                                            toggle={() => setActiveWindow("")}
+                                            title="TOOLBOX"
+                                            subtitle="Get All Your Items And Settings Done"
+                                          >
+                                            <Toolbox
+                                              activeCategory={activeCategory}
+                                              onCategoryClick={
+                                                handleCategoryClick
+                                              }
+                                            />
+                                          </ControlWindowLayout>
+                                        ) : null}
 
-                              {activeWindow === "help" ? (
-                                <ControlWindowLayout
-                                  toggle={() => setActiveWindow("")}
-                                  title="HELP"
-                                  subtitle="Get Guides, Tips, And Tricks Needed For A Successful Game"
-                                >
-                                  <GameHelp />
-                                </ControlWindowLayout>
-                              ) : null}
-                              <Control
-                                toggleActiveWindow={toggleActiveWindow}
-                              />
+                                        {activeWindow === "help" ? (
+                                          <ControlWindowLayout
+                                            toggle={() => setActiveWindow("")}
+                                            title="HELP"
+                                            subtitle="Get Guides, Tips, And Tricks Needed For A Successful Game"
+                                          >
+                                            <GameHelp />
+                                          </ControlWindowLayout>
+                                        ) : null}
+                                        <Control
+                                          toggleActiveWindow={
+                                            toggleActiveWindow
+                                          }
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Col>
+                              </Row>
                             </div>
                           </div>
-                        </div>
-                      </Col>
-                    </Row>
-                    </div>
-                  </div>
-                  <Footer />
-                </DiceProvider>
-              </ColorProvider>
-            </BoardContext.Provider>
-          </GameContext.Provider>
-          <ToastContainer position="bottom-center" />
-          </StarknetProvider>
+                          <Footer />
+                        </DiceProvider>
+                      </ColorProvider>
+                    </BoardContext.Provider>
+                  </GameContext.Provider>
+                  <ToastContainer position="bottom-center" />
+                </StarknetProvider>
+              }
+            />
+          </Routes>
         </>
       )}
-    </>
+    </Router>
   );
 };
 

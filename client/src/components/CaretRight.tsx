@@ -1,3 +1,6 @@
+
+
+import React from "react";
 const CaretRight: React.FC = () => {
     return (
       <div className="vecstore">

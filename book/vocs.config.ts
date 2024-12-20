@@ -20,11 +20,11 @@ export default defineConfig({
       items: [
         {
           text: "Rolling Dice",
-          link: "/gameplayandrules/rollingdice",
+          link: "/gameplayandrules/rolling-dice",
         },
         {
           text: "Safety Zones",
-          link: "/gameplayandrules/safetyzones",
+          link: "/gameplayandrules/safety-zones",
         },
         {
           text: "Rules",
@@ -42,21 +42,21 @@ export default defineConfig({
         },
         {
           text: "Leaderboard",
-          link: "/gamecomponents/leaderboard",
+          link: "/gamecomponents/leader-board",
         },
         {
           text: "Multiplayer",
-          link: "/gamecomponents/multiplayer",
+          link: "/gamecomponents/multi-player",
         },
         {
           text: "Game Appearance",
-          link: "/gamecomponents/gameappearance",
+          link: "/gamecomponents/game-appearance",
         },
       ],
     },
     {
       text: "Starknet wallet, NFT, and Tokenbound account Relationship in StarkLudo",
-      link: "/relationshipinstarkludo/relationshipinstarkludo",
+      link: "/relationshipinstarkludo/relationship-in-starkludo",
     },
   ],
   font: {
