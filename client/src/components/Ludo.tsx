@@ -11,7 +11,6 @@ import profile1 from "../assets/images/profile1.jpg";
 import profile2 from "../assets/images/profile2.jpg";
 import profile3 from "../assets/images/profile3.jpg";
 import profile4 from "../assets/images/profile4.jpg";
-import PlayerCorner from './PlayerCorner';
 
 const Ludo: React.FC = () => {
   const { size, tileMap } = useSize();
@@ -49,27 +48,32 @@ const Ludo: React.FC = () => {
 
   return (
     <div className={`container ${board} card`} ref={boardRef}>
-      {/* Game board */}
       {options.gameIsOngoing &&
         markers
           .slice(0, options.playersLength * 4)
           .map((m) => <Marker key={m} pos={m} size={size} tileMap={tileMap} />)}
       <LudoTiles />
 
-      {/* Player Corners */}
-      {players.map((player) => (
-        <PlayerCorner
-          key={player.id}
-          playerNumber={player.id + 1}
-          isCurrentTurn={options.playerChance === player.id}
-          playerColor={player.color}
-          avatarUrl={player.image}
-          playerName={player.name}
-          score={0}
-        />
-      ))}
+      {/* Player profile images */}
+      <div className="player-profiles">
+        {players.map((player) => (
+          <div
+            key={player.id}
+            className={`player-profile player-${player.color}`}
+          >
+            <img src={player.image} alt={player.name} />
+            <small className="username-player">{player.name}</small>
+            {options.playerChance === player.id && (
+              <span
+                className={`${player.color === "red" || player.color === "green" ? "turn-indicator" : player.color === "yellow" || player.color === "blue" ? "turn-indicator-left" : ""}`}
+              >
+                YOUR TURN
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
 
-      {/* Overlay */}
       {!options.playersLength && (
         <div className="overlay">
           <div className="overlay-child">

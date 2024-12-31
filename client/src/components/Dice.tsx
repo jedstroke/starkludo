@@ -1,127 +1,154 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useRef, useState } from "react";
-import { useGame } from "../hooks/game-hook";
-import { Col } from "react-simple-flex-grid";
-import "../styles/Dice.scss";
-import ThreeDice from 'react-dice-roll';
-import { GameContext } from "../context/game-context";
-import RestartModal from "./RestartModal";
-import diceSound from "../assets/audio/shaking-dice-25620.mp3";
+import React, { useState, useEffect, useRef } from 'react';
+import { useGame } from '../context/game-context-2.';
 
-const Dice = () => {
-  const [restart, setRestart] = useState(false);
-  const { moveValidator, endGame: restartGame } = useGame();
-  const { options, setGameOptions } = useContext(GameContext);
-  const diceRef = useRef<any>(null);
+interface DiceProps {
+  onRoll: (numbers: number[]) => void;
+  controlledValues?: [number, number]; // Optional controlled values for the dice
+}
 
-  function handleRestartGame() {
-    setRestart(true);
-  }
+const Dice: React.FC<DiceProps> = ({ onRoll, controlledValues }) => {
+  const { players, currentTurn, rolledNumber1, rolledNumber2 } = useGame();
+  const [dice1, setDice1] = useState(1);
+  const [dice2, setDice2] = useState(1);
+  const dice1Ref = useRef<HTMLDivElement | null>(null);
+  const dice2Ref = useRef<HTMLDivElement | null>(null);
 
-  function handleConfirm() {
-    restartGame();
-    setRestart(false);
-  }
-
-  function handleCancle() {
-    setRestart(false);
-  }
-
-  const deterministicRoll = (value: number) => {
-    if (diceRef.current) {
-      diceRef.current.rollDice(value); // Call the rollDice method with a fixed value
+  // If controlledValues prop is passed, use it
+  useEffect(() => {
+    if (controlledValues) {
+      setDice1(controlledValues[0]);
+      setDice2(controlledValues[1]);
     }
-  };
+  }, [controlledValues]);
 
-  // The is the argument for the rollDie function
-  const randomRollAmount = () => {
-    const rollAmount = Math.floor(Math.random() * 30 + 15);
-    return rollAmount;
-  };
+  // const rollDice = () => {
+  //   const rolledNumber1 = Math.floor(Math.random() * 6) + 1;
+  //   const rolledNumber2 = Math.floor(Math.random() * 6) + 1;
+  //   setDice1(rolledNumber1);
+  //   setDice2(rolledNumber2);
+  //   onRoll([rolledNumber1, rolledNumber2]);
 
-  // The end result is simply a random number picked between 1 and 6
-  const randomRollResult = async () => {
+  //   // Trigger the dice roll animation again
+  //   if (dice1Ref.current && dice2Ref.current) {
+  //     dice1Ref.current.classList.add('rolling');
+  //     dice2Ref.current.classList.add('rolling');
 
-    let rollResult = 6;
+  //     setTimeout(() => {
+  //       dice1Ref.current?.classList.remove('rolling');
+  //       dice2Ref.current?.classList.remove('rolling');
+  //     }, 500); // Match the duration of the animation
+  //   }
 
-    rollResult = Math.floor(Math.random() * 6 + 1);
-    moveValidator(rollResult);
-    return rollResult;
-  };
+  //   // Pass the turn to the next player
+  //   const nextPlayerId = currentTurn === 4 ? 1 : currentTurn + 1;
+  //   setPlayerTurn(nextPlayerId); // Update the turn to the next player
+  // };
 
-  // This adds a setInterval to make the dots on the die
-
-  const rollDie = async (numberOfRolls: number) => {
-    let counter = 1;
-    let number = 1;
-    const rollState = async () => {
-      // when to stop the roll
-      if (counter >= numberOfRolls) {
-        clearInterval(rolling);
-        // The result on die
-        const x = await randomRollResult();
-        deterministicRoll(x);
-        moveValidator(x); // Validate move after rolling
-      } else {
-        // rolls the die by quickly displaying then hiding them
-        deterministicRoll(number)
-        // incrementer values for setInterval
-        counter += 1;
-        // which dots to show on die for 1 to 6
-        number += 1;
-        // Keep looping the values from 1 to 6
-        if (number > 6) {
-          number = 1;
-        }
-      }
+  const getDotPositions = (num: number) => {
+    const positions: { [key: number]: [number, number][] } = {
+      1: [[1, 1]],
+      2: [
+        [0, 0],
+        [2, 2],
+      ],
+      3: [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      4: [
+        [0, 0],
+        [0, 2],
+        [2, 0],
+        [2, 2],
+      ],
+      5: [
+        [0, 0],
+        [0, 2],
+        [1, 1],
+        [2, 0],
+        [2, 2],
+      ],
+      6: [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
     };
-    const rolling = setInterval(rollState, 125);
+    return positions[num as keyof typeof positions];
   };
 
-  const roller = async () => {
-    if (
-      !options.hasThrownDice &&
-      options.gameIsOngoing &&
-      !options.winners.includes(options.playerChance)
-    ) {
-      setGameOptions({ hasThrownDice: true, winners: [] });
-      await rollDie(randomRollAmount());
-    }
-  };
+  const dots1 = getDotPositions(rolledNumber1);
+  const dots2 = getDotPositions(rolledNumber2);
+
+  const renderDice = (dots: [number, number][]) => (
+    <div className="grid grid-rows-3 grid-cols-3 w-full h-full p-2">
+      {Array.from({ length: 9 }).map((_, index) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const isDot = dots?.some(([r, c]) => r === row && c === col);
+
+        return (
+          <div
+            key={index}
+            className={`flex justify-center items-center ${isDot ? 'bg-[#E6E6E5] rounded-full w-[6px] h-[6px]' : ''}`}
+          ></div>
+        );
+      })}
+    </div>
+  );
 
   return (
-    <React.Fragment>
-      {options.gameIsOngoing && (
-        <div className="dice-container">
-          <Col xs={options.hasThrownDice ? 12 : 6}>
-            <ThreeDice disabled={!options.hasThrownDice} ref={diceRef} sound={diceSound} rollingTime={1000} size={70} />
-          </Col>
-            <Col xs={6}>
-              <div style={{
-              visibility: (options.hasThrownDice || options.winners.includes(options.playerChance)) ? "hidden":"visible"
-              }}>
-              <div onClick={roller} className="button-container">
-                {options.gameIsOngoing && (<a className="start-over" onClick={(e) => {
-                  e.stopPropagation();
-                  handleRestartGame();
-                }}>Start Over</a>)}
-                <button className="roll-button">
-                  <span className="roll-text">ROLL</span>
-                </button>
-              </div>
-              </div>
-            </Col>
+    <div className="dice-container flex flex-col justify-center px-2 w-full h-full relative">
+      {/* First Dice */}
+      <div className="w-[60%] flex justify-start">
+        <div
+          ref={dice1Ref}
+          className="bg-gray-800 flex justify-center items-center rounded-lg shadow-md cursor-pointer w-8 h-8"
+        >
+          {renderDice(dots1)}
         </div>
-      )}
-      {restart && (
-        <RestartModal
-          message="Are you sure you want to restart the game?"
-          extraMessage="If you click yes, there’s no going back"
-          onConfirm={handleConfirm}
-          onCancel={handleCancle}
-        />
-      )}
-    </React.Fragment>
+      </div>
+
+      {/* Second Dice */}
+      <div className="w-[60%] flex justify-end">
+        <div
+          ref={dice2Ref}
+          className="bg-gray-800 flex justify-center items-center rounded-lg shadow-md cursor-pointer w-8 h-8"
+        >
+          {renderDice(dots2)}
+        </div>
+      </div>
+
+      <style>
+        {`
+          .rolling {
+            animation: roll 0.9s ease-in-out;
+          }
+
+          @keyframes roll {
+            0% {
+              transform: rotate(0deg) scale(1);
+            }
+            25% {
+              transform: rotate(45deg) scale(1.1);
+            }
+            50% {
+              transform: rotate(90deg) scale(1);
+            }
+            75% {
+              transform: rotate(135deg) scale(1.1);
+            }
+            100% {
+              transform: rotate(180deg) scale(1);
+            }
+          }
+        `}
+      </style>
+    </div>
   );
 };
 
