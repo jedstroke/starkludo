@@ -5,6 +5,7 @@ use starkludo::models::player::{Player};
 // Can either be Ongoing or Ended
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug)]
 pub enum GameStatus {
+    Initialised,
     Pending,
     Ongoing,
     Waiting,
@@ -20,9 +21,11 @@ pub enum GameMode {
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
-pub enum PiecePosition {
-    SinglePlayer, // Play with computer
-    MultiPlayer, // Play online with friends
+pub enum PlayerColor {
+    Green,
+    Yellow,
+    Blue,
+    Red
 }
 
 // Game model
@@ -31,10 +34,12 @@ pub enum PiecePosition {
 #[dojo::model]
 pub struct Game {
     #[key]
-    pub id: usize, // Unique id of the game
+    pub id: u64, // Unique id of the game
     pub created_by: felt252, // Address of the game creator
-    pub game_status: GameStatus, // Status of the game
-    pub game_mode: GameMode, // Mode of the game
+    pub is_initialised: bool, // Indicate whether game with given Id has been created/initialised
+    pub status: GameStatus, // Status of the game
+    pub mode: GameMode, // Mode of the game
+    pub ready_to_start: bool, // Indicate whether game can be started
     pub player_green: felt252, // Player contract address
     pub player_yellow: felt252, // Player contract address
     pub player_blue: felt252, // Player contract address
@@ -70,7 +75,7 @@ pub struct Game {
 pub trait GameTrait {
     // Create and return a new game
     fn new(
-        id: usize,
+        id: u64,
         created_by: felt252,
         game_mode: GameMode,
         player_red: felt252,
@@ -85,7 +90,7 @@ pub trait GameTrait {
 
 impl GameImpl of GameTrait {
     fn new(
-        id: usize,
+        id: u64,
         created_by: felt252,
         game_mode: GameMode,
         player_red: felt252,
@@ -98,8 +103,10 @@ impl GameImpl of GameTrait {
         Game {
             id,
             created_by,
-            game_status: GameStatus::Pending,
-            game_mode,
+            is_initialised: true,
+            status: GameStatus::Initialised,
+            mode: game_mode,
+            ready_to_start: false,
             player_green,
             player_yellow,
             player_blue,
@@ -257,6 +264,16 @@ impl GameImpl of GameTrait {
     }
 
     fn terminate_game(ref self: Game) {
-        self.game_status = GameStatus::Ended;
+        self.status = GameStatus::Ended;
     }
 }
+
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[dojo::model]
+pub struct GameCounter {
+    #[key]
+    pub id: felt252,
+    pub current_val: u64,
+}
+

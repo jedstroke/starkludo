@@ -12,6 +12,7 @@ pub struct Player {
     pub total_games_won: u256, // Count of total games won by this player
 }
 
+
 #[derive(Drop, Copy, Serde)]
 #[dojo::model]
 pub struct UsernameToAddress {
