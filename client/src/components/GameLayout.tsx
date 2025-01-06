@@ -1,21 +1,22 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-import React, { useEffect, useState } from 'react'
-import { BackgroundPlaceholder } from '../blur-placeholder';
-import { loadFromCache } from '../hooks/utils';
+import React, { useEffect, useState } from "react";
+import { BackgroundPlaceholder } from "../blur-placeholder";
+import { loadFromCache } from "../hooks/utils";
 
 interface ComponentsProps {
-    children: React.ReactNode
+    children: React.ReactNode;
 }
 
-const GameLayout: React.FC<ComponentsProps> = ({
-    children
-}) => {
+const GameLayout: React.FC<ComponentsProps> = ({ children }) => {
     const [isGameAssetsSet, setGameAssets] = useState({ status: false, bgURL: "" });
+
     const init = async () => {
-        const bgImageBlob = await loadFromCache('/game-assets/nodice-bg.gif');
-        console.log(bgImageBlob, "Background");
+        const bgImageBlob = await loadFromCache("/game-assets/images/bg.png");
         const bgImageUrl = URL.createObjectURL(bgImageBlob);
-        console.log(bgImageUrl, "Background URL");
+        const fontBlob = await loadFromCache("/game-assets/fonts/Rowdies/Rowdies-Regular.ttf");
+        const fontUrl = URL.createObjectURL(fontBlob);
+        const fontFace = new FontFace("Rowdies", `url(${fontUrl})`);
+        await fontFace.load();
+        document.fonts.add(fontFace);
         setGameAssets({ status: true, bgURL: bgImageUrl });
     };
 
@@ -23,22 +24,22 @@ const GameLayout: React.FC<ComponentsProps> = ({
         init();
     }, []);
 
-        return (
-            <div
-                style={{
-                    background: isGameAssetsSet.status
-                        ? `url(${isGameAssetsSet.bgURL}) no-repeat center center`
-                        : `url(${BackgroundPlaceholder}) no-repeat center center`,
-                    backgroundSize: "100% 100%",
-                    // backgroundAttachment:"fixed",
-                    // backgroundOrigin:"border-box",
-                    width: "100vw",
-                    height: "100vh",
-                }}
-            >
+    return (
+        <div
+            style={{
+                fontFamily: "Rowdies, 'Trebuchet MS', sans-serif",
+                backgroundImage: `url(${isGameAssetsSet.status ? isGameAssetsSet.bgURL : BackgroundPlaceholder})`,
+                backgroundRepeat: "no-repeat",
+                overflow: "hidden",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                width: "100vw",
+                height: "100vh",
+            }}
+        >
             {children}
-            </div>
-        );
-}
+        </div>
+    );
+};
 
 export default GameLayout;

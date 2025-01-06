@@ -45,6 +45,11 @@
   width: 10px;
 }
 
+.bg-text {
+  color: rgba(249, 249, 249, 0.7);
+  font-size: 150px;
+}
+
 *::-webkit-scrollbar-track {
   background: #854D15;
   /* Dark background */

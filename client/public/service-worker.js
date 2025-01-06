@@ -1,6 +1,8 @@
 const CACHE_NAME = "game-assets-cache-v1";
 const urlsToCache = [
-  "/game-assets/nodice-bg.gif",
+  "/game-assets/images/bg.png",
+  "/game-assets/images/dice-bg.png",
+  "/game-assets/fonts/Rowdies/Rowdies-Regular.ttf",
 ];
 
 // Install the service worker and cache resources
