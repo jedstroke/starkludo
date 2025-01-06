@@ -28,9 +28,11 @@ import Dice from "./components/Dice";
 import Footer from "./components/Footer";
 import Ludo from "./components/Ludo";
 import Menu from "./components/Menu";
+import { FiAlertTriangle, FiZap } from "react-icons/fi";
 
-const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
-  console.log("SDK initialized:", sdk);
+// const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
+const App = () => {
+  // console.log("SDK initialized:", sdk);
 
   const [activeWindow, setActiveWindow] = useState("");
   const [showMobileResponsiveWarning, setShowMobileResponsiveWarning] =
