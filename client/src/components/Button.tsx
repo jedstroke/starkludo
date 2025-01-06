@@ -12,11 +12,11 @@ const Button: React.FC<ButtonProps> = ({ label, variant, icon, onClick }) => {
         "flex items-center justify-center font-bold text-center transition duration-300 ease-in-out focus:outline-none";
     const variants = {
         primary:
-            "bg-brown-500 text-beige-100 px-6 py-3 rounded-lg border-[2px] border-brown-700 hover:bg-brown-600",
+            "bg-brown-600 text-beige-100 px-6 py-3 rounded-lg border-[2px] border-brown-700 hover:bg-brown-700",
         rounded:
-            "bg-brown-500 text-beige-100 px-5 py-2 rounded-full border-[2px] border-brown-700 hover:bg-brown-600",
+            "bg-brown-600 text-beige-100 px-5 py-2 rounded-full border-[2px] border-brown-700 hover:bg-brown-700",
         secondary:
-            "bg-beige-200 text-brown-700 px-5 py-3 rounded-lg border-[2px] border-brown-400 shadow hover:bg-beige-300",
+            "bg-beige-300 text-brown-700 px-5 py-3 rounded-lg border-[2px] border-brown-400 shadow",
     };
 
     return (

@@ -46,7 +46,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
                     <p className="font-bold bg-text relative -top-20">Ludo</p>
                 </div>
                 <div className='flex justify-center h-44 items-center w-full absolute bottom-0'>
-                <Button icon={<img src={play} className='w-[24px] h-auto' />} variant='primary' label='Launch game' />
+                <Button icon={<img src={play} className='w-[23px] h-auto' />} variant='primary' label='Launch game' />
                 </div>
             </div>
         </div>
