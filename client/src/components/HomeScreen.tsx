@@ -27,7 +27,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
                     pointerEvents: fontLoaded ? "auto" : "none",
                     transition: "opacity 1s ease-in-out",
                 }}
-                className="flex-col justify-center relative pt-20 w-[840px]"
+                className="flex-col justify-center relative pt-20 w-[1024px] max-w-screen-lg mx-auto"
             >
                 <div className="flex w-full h-fit items-center justify-start">
                     <p className="font-bold bg-text relative pt-5 flex">
@@ -45,7 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
                     />
                     <p className="font-bold bg-text relative -top-20">Ludo</p>
                 </div>
-                <div className='flex justify-center h-44 items-center w-full absolute bottom-0'>
+                <div className='flex justify-center h-fit items-center w-full absolute bottom-16'>
                 <Button icon={<img src={play} className='w-[23px] h-auto' />} variant='primary' label='Launch game' />
                 </div>
             </div>
