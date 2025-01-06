@@ -26,8 +26,9 @@ const GameLayout: React.FC<ComponentsProps> = ({ children }) => {
 
     return (
         <div
+            className="antialiased swap-font"
             style={{
-                fontFamily: "Rowdies, 'Trebuchet MS', sans-serif",
+                fontFamily: "Rowdies",
                 backgroundImage: `url(${isGameAssetsSet.status ? isGameAssetsSet.bgURL : BackgroundPlaceholder})`,
                 backgroundRepeat: "no-repeat",
                 overflow: "hidden",
