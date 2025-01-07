@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { Row, Col } from "react-simple-flex-grid";
 import { GameContext } from "./context/game-context";
 import { chance } from "./hooks/utils";
@@ -31,10 +31,10 @@ import Menu from "./components/Menu";
 import { FiAlertTriangle, FiZap } from "react-icons/fi";
 import GameLayout from "./components/GameLayout";
 import HomeScreen from "./components/HomeScreen";
+import StartGameScreen from "./components/StartGameScreen";
 
-// const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
-const App = () => {
-  // console.log("SDK initialized:", sdk);
+const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
+  console.log("SDK initialized:", sdk);
 
   const [activeWindow, setActiveWindow] = useState("");
   const [showMobileResponsiveWarning, setShowMobileResponsiveWarning] =
@@ -136,6 +136,10 @@ const App = () => {
                         <Route
                           path="/"
                           element={<HomeScreen />}
+                        />
+                        <Route
+                          path="/start"
+                          element={<StartGameScreen />}
                         />
                       </Routes>
                     </GameLayout>

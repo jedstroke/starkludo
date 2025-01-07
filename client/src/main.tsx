@@ -15,30 +15,29 @@ import { schema, StarkludoSchemaType } from "./dojo/gen/models.gen";
  * @throws {Error} If initialization fails
  */
 async function main() {
-  // const sdk = await init<StarkludoSchemaType>(
-  //   {
-  //     client: {
-  //       rpcUrl: dojoConfig.rpcUrl,
-  //       toriiUrl: dojoConfig.toriiUrl,
-  //       relayUrl: dojoConfig.relayUrl,
-  //       worldAddress: dojoConfig.manifest.world.address,
-  //     },
-  //     domain: {
-  //       name: "WORLD_NAME",
-  //       version: "1.0",
-  //       chainId: "KATANA",
-  //       revision: "1",
-  //     },
-  //   },
-  //   schema
-  // );
+  const sdk = await init<StarkludoSchemaType>(
+    {
+      client: {
+        rpcUrl: dojoConfig.rpcUrl,
+        toriiUrl: dojoConfig.toriiUrl,
+        relayUrl: dojoConfig.relayUrl,
+        worldAddress: dojoConfig.manifest.world.address,
+      },
+      domain: {
+        name: "WORLD_NAME",
+        version: "1.0",
+        chainId: "KATANA",
+        revision: "1",
+      },
+    },
+    schema
+  );
 
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      {/* <DojoContextProvider burnerManager={await setupBurnerManager(dojoConfig)}> */}
-        <App />
-        {/* <App sdk={sdk} /> */}
-      {/* </DojoContextProvider> */}
+      <DojoContextProvider burnerManager={await setupBurnerManager(dojoConfig)}>
+        <App sdk={sdk} />
+      </DojoContextProvider>
     </StrictMode>
   );
 }
