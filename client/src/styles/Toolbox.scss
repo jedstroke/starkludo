@@ -62,4 +62,14 @@
       width: 57px;
     }
   }
+  .avatar-options {
+    display: grid;
+    padding: 12px 0;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    img {
+      height: 70px;
+      width: 57px;
+    }
+  }
 }

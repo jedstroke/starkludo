@@ -2,6 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { Row, Col } from "react-simple-flex-grid";
 import { GameContext } from "./context/game-context";
+import Ludo from "./components/Ludo";
+import Dice from "./components/Dice";
+import Menu from "./components/Menu";
+import Header from "./components/Header";
+import ColorSettings from "./components/ColorSettings";
+import Alert from "./components/Alert";
+import Footer from "./components/Footer";
 import { chance } from "./hooks/utils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,9 +19,11 @@ import { BoardContext, BoardType } from "./context/board-context";
 import { DiceProvider } from "./context/dice-context";
 import { ColorProvider } from "./context/color-context";
 import MobileResponsiveWarning from "./components/MobileResponsiveWarning";
-import { StarkludoSchemaType } from "./dojo/gen/models.gen";
-import { SDK } from "@dojoengine/sdk";
+import { SchemaType } from "./dojo/typescript/models.gen";
+import { createDojoStore, SDK } from "@dojoengine/sdk";
 import Settings from "./components/Settings";
+import ToolboxPage from "./components/Toolbox";
+import { AvatarProvider } from "./context/avatar-context";
 import Header from "./components/Header";
 import Alert from "./components/Alert";
 import Control from "./components/Control";
@@ -33,9 +42,7 @@ import GameLayout from "./components/GameLayout";
 import HomeScreen from "./components/HomeScreen";
 import StartGameScreen from "./components/StartGameScreen";
 
-const App = ({ sdk }: { sdk: SDK<StarkludoSchemaType> }) => {
-  console.log("SDK initialized:", sdk);
-
+const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
   const [activeWindow, setActiveWindow] = useState("");
   const [showMobileResponsiveWarning, setShowMobileResponsiveWarning] =
     useState(false);

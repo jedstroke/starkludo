@@ -12,7 +12,7 @@ const Settings: React.FC = () => {
   const [soundLevel, setSoundLevel] = useState(5);
   const [musicLevel, setMusicLevel] = useState(5);
   const [difficultyLevel, setDifficultyLevel] = useState("beginner");
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSettingChange = (type: string, value: any) => {
     switch (type) {
       case "sound":
@@ -28,7 +28,7 @@ const Settings: React.FC = () => {
         break;
     }
   };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderLevelButtons = (type: string, currentValue: number | string, levels: any[]) =>
     levels.map((level, index) => (
       <button

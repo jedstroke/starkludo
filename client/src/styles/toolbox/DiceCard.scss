@@ -1,0 +1,27 @@
+.dice-container {
+  padding: 1.5px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  &.active {
+    border-bottom: 2px solid #854D15;
+  }
+  &:hover {
+    
+    background: #fc9d0468;
+  }
+  .dice {
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    .name-label {
+      border-top: rgba(45, 204, 253, 0.48) 1px solid;
+      width: 100%f;
+      text-align: center;
+      color: #854D15;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+}

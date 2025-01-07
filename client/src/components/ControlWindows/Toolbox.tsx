@@ -3,6 +3,7 @@ import "../../styles/Toolbox.scss";
 import { BoardContext } from "../../context/board-context";
 import { DiceContext } from "../../context/dice-context";
 import { ColorContext } from "../../context/color-context";
+import { AvatarContext } from "../../context/avatar-context";
 import OptionCard from "../OptionCard";
 import DiceCard from "../DiceCard";
 import PieceDesignCard from "../PieceDesignCard";
@@ -16,6 +17,12 @@ import map from "../../assets/images/Eyedropper.svg";
 import king from "../../assets/images/Crown.svg";
 import square from "../../assets/images/Polygon.svg";
 import circle from "../../assets/images/Circle.svg";
+import AvatarCard from "../AvatarCard";
+
+import profile1 from "../../assets/images/profile1.jpg";
+import profile2 from "../../assets/images/profile2.jpg";
+import profile3 from "../../assets/images/profile3.jpg";
+import profile4 from "../../assets/images/profile4.jpg";
 
 interface ToolboxProps {
   activeCategory: string;
@@ -29,6 +36,7 @@ const Toolbox: React.FC<ToolboxProps> = ({
   const { board, toggleBoard } = useContext(BoardContext);
   const { dice, changeDice } = useContext(DiceContext);
   const { design, changeDesign } = useContext(ColorContext);
+  const { avatar, changeAvatar } = useContext(AvatarContext);
 
   const boardOptions = [
     { name: "Classic", option: "classic" },
@@ -52,6 +60,13 @@ const Toolbox: React.FC<ToolboxProps> = ({
     { name: "Circle", option: "circle", img: circle },
   ];
 
+  const avatarOptions = [
+    { option: "avatar1", avatar: profile1 },
+    { option: "avatar2", avatar: profile2 },
+    { option: "avatar3", avatar: profile3 },
+    { option: "avatar4", avatar: profile4 },
+  ];
+
   return (
     <div className="toolbox">
       <div className="categories">
@@ -68,10 +83,10 @@ const Toolbox: React.FC<ToolboxProps> = ({
           DICE
         </button>
         <button
-          className={`category ${activeCategory === "PIECE" ? "active" : ""}`}
-          onClick={() => onCategoryClick("AVATER")}
+          className={`category ${activeCategory === "AVATAR" ? "active" : ""}`}
+          onClick={() => onCategoryClick("AVATAR")}
         >
-          AVATER
+          AVATAR
         </button>
         <button
           className={`category ${activeCategory === "COLOR" ? "active" : ""}`}
@@ -121,6 +136,19 @@ const Toolbox: React.FC<ToolboxProps> = ({
               active={design === item.option}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onSelect={() => changeDesign(item.option as any)}
+            />
+          ))}
+        </div>
+      )}
+      {activeCategory === "AVATAR" && (
+        <div className="avatar-options">
+          {avatarOptions.map((item) => (
+            <AvatarCard
+              key={item.option}
+              avatar={item.avatar}
+              active={avatar === item.option}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onSelect={() => changeAvatar(item.option as any)}
             />
           ))}
         </div>
