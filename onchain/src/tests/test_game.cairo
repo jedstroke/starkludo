@@ -137,7 +137,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     #[should_panic(expected: ('USERNAME ALREADY TAKEN', 'ENTRYPOINT_FAILED',))]
     fn test_create_new_player_should_panic_if_username_already_exist() {
         let (_, game_action_system) = setup_world();
@@ -145,36 +144,35 @@ mod tests {
         let caller_2 = contract_address_const::<'dreamer'>();
         let username = 'ibs';
 
-        testing::set_caller_address(caller_1);
+        testing::set_contract_address(caller_1);
         game_action_system.create_new_player(username, false);
 
-        testing::set_caller_address(caller_2);
+        testing::set_contract_address(caller_2);
         game_action_system.create_new_player(username, false);
     }
 
     #[test]
-    #[ignore]
     #[should_panic(expected: ('USERNAME ALREADY CREATED', 'ENTRYPOINT_FAILED',))]
     fn test_create_new_player_should_fail_panic_username_already_created() {
         let (_, game_action_system) = setup_world();
         let caller = contract_address_const::<'ibs'>();
         let username = 'ibs';
+        let username1 = 'dreamer';
 
-        testing::set_caller_address(caller);
+        testing::set_contract_address(caller);
         // Player create username for the first time
         game_action_system.create_new_player(username, false);
-        // Player attempts to create username for the second time
-        game_action_system.create_new_player(username, false);
+        // Player attempts to create another username for the second time
+        game_action_system.create_new_player(username1, false);
     }
 
     #[test]
-    #[ignore]
     fn test_create_new_player_is_successful() {
         let (world, game_action_system) = setup_world();
         let caller = contract_address_const::<'ibs'>();
         let username = 'ibs';
 
-        testing::set_caller_address(caller);
+        testing::set_contract_address(caller);
         game_action_system.create_new_player(username, false);
 
         let created_player: Player = world.read_model(username);
