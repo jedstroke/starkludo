@@ -11,7 +11,7 @@ const HomeScreen: React.FC = () => {
         await document.fonts.ready;
         setTimeout(() => {
             setFontLoaded(true);
-        }, 1000);
+        }, 100);
     };
 
     useEffect(() => {

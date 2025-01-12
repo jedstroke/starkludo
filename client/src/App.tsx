@@ -1,14 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { Row, Col } from "react-simple-flex-grid";
 import { GameContext } from "./context/game-context";
-import Ludo from "./components/Ludo";
-import Dice from "./components/Dice";
-import Menu from "./components/Menu";
-import Header from "./components/Header";
-import ColorSettings from "./components/ColorSettings";
-import Alert from "./components/Alert";
-import Footer from "./components/Footer";
 import { chance } from "./hooks/utils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,28 +13,15 @@ import { ColorProvider } from "./context/color-context";
 import MobileResponsiveWarning from "./components/MobileResponsiveWarning";
 import { SchemaType } from "./dojo/typescript/models.gen";
 import { createDojoStore, SDK } from "@dojoengine/sdk";
+import toastBtn from "./assets/images/button-icon/close-btn-toast.svg"
 import Settings from "./components/Settings";
-import ToolboxPage from "./components/Toolbox";
-import { AvatarProvider } from "./context/avatar-context";
-import Header from "./components/Header";
-import Alert from "./components/Alert";
-import Control from "./components/Control";
-import ControlWindowLayout from "./components/ControlWindows/ControlWindowLayout";
-import GameAccount from "./components/ControlWindows/GameAccount";
-import GameHelp from "./components/ControlWindows/GameHelp";
-import Leaderboard from "./components/ControlWindows/Leaderboard";
-import Multiplayer from "./components/ControlWindows/Multiplayer";
-import Toolbox from "./components/ControlWindows/Toolbox";
-import Dice from "./components/Dice";
-import Footer from "./components/Footer";
-import Ludo from "./components/Ludo";
-import Menu from "./components/Menu";
-import { FiAlertTriangle, FiZap } from "react-icons/fi";
 import GameLayout from "./components/GameLayout";
 import HomeScreen from "./components/HomeScreen";
 import StartGameScreen from "./components/StartGameScreen";
+import AccountScreen from "./components/AccountScreen";
 
 const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
+// const App = () => {
   const [activeWindow, setActiveWindow] = useState("");
   const [showMobileResponsiveWarning, setShowMobileResponsiveWarning] =
     useState(false);
@@ -136,14 +115,15 @@ const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
                   <DiceProvider>
                     <GameLayout>
                       <Routes>
-                        {/* Settings Route */}
-                        <Route path="/settings" element={<Settings />} />
-
-                        {/* Home Page Route */}
                         <Route
                           path="/"
                           element={<HomeScreen />}
                         />
+                        <Route
+                          path="/account"
+                          element={<AccountScreen />}
+                        />
+                        <Route path="/settings" element={<Settings />} />
                         <Route
                           path="/start"
                           element={<StartGameScreen />}
@@ -154,7 +134,7 @@ const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
                 </ColorProvider>
               </BoardContext.Provider>
             </GameContext.Provider>
-            <ToastContainer position="bottom-center" />
+            <ToastContainer position="bottom-right" closeButton={<img src={toastBtn} className="w-4 h-4" alt="close-btn" />} />
           </StarknetProvider>
         </>
       )}

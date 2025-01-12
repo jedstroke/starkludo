@@ -36,6 +36,7 @@ async function main() {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <DojoContextProvider burnerManager={await setupBurnerManager(dojoConfig)}>
+        {/* <App /> */}
         <App sdk={sdk} />
       </DojoContextProvider>
     </StrictMode>

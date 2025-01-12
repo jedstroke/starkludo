@@ -8,7 +8,7 @@ import RestartModal from "./RestartModal";
 const RestartGame: React.FC = () => {
   const { options } = useContext(GameContext);
   const { endGame: restartGame } = useGame();
-  const [restart, setRestart] = useState(false);
+  const [restart, setRestart] = useState(true);
 
   function handleRestartGame() {
     setRestart(true);

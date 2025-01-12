@@ -32,6 +32,7 @@ const GameLayout: React.FC<ComponentsProps> = ({ children }) => {
                 backgroundImage: `url(${isGameAssetsSet.status ? isGameAssetsSet.bgURL : BackgroundPlaceholder})`,
                 backgroundRepeat: "no-repeat",
                 overflow: "hidden",
+                boxSizing: "border-box",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 width: "100vw",
