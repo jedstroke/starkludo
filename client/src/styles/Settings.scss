@@ -1,33 +1,5 @@
-.settings {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: block;
-  background-image: url("../assets/images/settings/bg.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: 0;
-  .settings-container {
-    position: absolute;
-    z-index: 9999;
-    padding: 124px 0;
-    margin: 0 auto;
-    width: 100%;
     .settings-box {
-      display: flex;
-      flex-direction: column;
-      justify-content: start;
-      align-items: start;
-      margin: 0 auto;
-      gap: 48px;
-      width: 90%;
-      @media only screen and (min-width: 996px) {
-        width: 80%;
-      }
-      @media only screen and (min-width: 1378px) {
-        width: 72%;
-      }
+      width: fit-content;
       .settings-menu__box {
         width: 100%;
         display: flex;
@@ -99,7 +71,7 @@
         align-items: start;
         flex-direction: column;
         gap: 20px;
-        width: 64%;
+        width: fit-content;
         max-width: 600px;
         .settings-game-header {
           padding: 12px 0 24px 0;
@@ -119,8 +91,8 @@
             align-items: center;
           }
           .settings-game-header-close {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             display: flex;
             justify-content: end;
             align-items: center;
@@ -148,18 +120,18 @@
               gap: 16px;
               width: fit-content;
               .settings-select-img {
-                width: 24px;
-                height: 24px;
+                width: 20px;
+                height: 20px;
               }
               .settings-select-btn {
                 width: 11px;
-                height: 22px;
+                height: 20px;
                 border: 0.1rem solid #854d15;
                 background-color: transparent;
               }
               .settings-select-btn-active {
                 width: 11px;
-                height: 22px;
+                height: 20px;
                 border: 0.1rem solid #854d15;
                 background-color: #854d15;
               }
@@ -205,8 +177,8 @@
             gap: 10px;
             width: 100%;
             .settings-change__game__background-play {
-              width: 18px;
-              height: 18px;
+              width: 15px;
+              height: 15px;
             }
           }
           .settings-title {
@@ -217,76 +189,5 @@
           }
         }
       }
-      .settings-footer {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 0;
-        .settings-footer-left {
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          gap: 12px;
-          .settings-footer-left-btn {
-            background-color: #854d15;
-            text-align: center;
-            border-radius: 4px;
-            border: 1px solid #d58f49;
-            backdrop-filter: blur(20px);
-            box-shadow: 2px 2px 0px 0px rgba(133, 77, 21, 1);
-            font-weight: 400;
-            font-size: 18px;
-            line-height: 25px;
-            padding: 10px 20px;
-            color: #dac29c;
-            gap: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            @media only screen and (max-width: 992px) {
-              padding: 8px 16px;
-              font-size: 14px;
-              gap: 8px;
-            }
-            @media only screen and (max-width: 1200px) {
-              padding: 9px 18px;
-              font-size: 16px;
-              gap: 10px;
-            }
-          }
-        }
-        .settings-footer-right {
-          display: flex;
-          justify-content: end;
-          align-items: center;
-          gap: 12px;
-          .settings-footer-right-btn {
-            background-color: #dac29c;
-            text-align: center;
-            border-radius: 4px;
-            border: 1px solid #854d15;
-            box-shadow: 0px 4px 2px 0px rgba(0, 0, 0, 0.25);
-            font-weight: 400;
-            font-size: 17px;
-            line-height: 25px;
-            padding: 8px 14px;
-            color: #854d15;
-            @media only screen and (max-width: 992px) {
-              padding: 6px 8px;
-              font-size: 13px;
-            }
-            @media only screen and (max-width: 1200px) {
-              padding: 7px 12px;
-              font-size: 15px;
-            }
-          }
-          .settings-footer-right-btn-active {
-            background-color: #feefef;
-          }
-        }
-      }
     }
-  }
-}
+

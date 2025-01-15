@@ -2,7 +2,7 @@
 import React from 'react'
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
-import { AccountTable } from './AccountTable';
+import { Leaderboard } from './Leaderboard';
 import Nav from './Nav';
 
 interface ComponentsProps { }
@@ -13,7 +13,7 @@ const AccountScreen: React.FC<ComponentsProps> = () => {
         <div className="flex p-2 box-border w-screen h-screen justify-center relative">
             <div className='box-border w-full pt-10 relative mx-auto max-w-screen-lg h-screen'>
                 <Nav />
-                <AccountTable height={"50%"} />
+                <Leaderboard height={"45vh"} />
                 <div className='flex absolute justify-end w-full bottom-10'>
                     <div className='flex gap-2'>
                         <Button onClick={() => {

@@ -14,11 +14,17 @@ import MobileResponsiveWarning from "./components/MobileResponsiveWarning";
 import { SchemaType } from "./dojo/typescript/models.gen";
 import { createDojoStore, SDK } from "@dojoengine/sdk";
 import toastBtn from "./assets/images/button-icon/close-btn-toast.svg"
-import Settings from "./components/Settings";
 import GameLayout from "./components/GameLayout";
 import HomeScreen from "./components/HomeScreen";
 import StartGameScreen from "./components/StartGameScreen";
 import AccountScreen from "./components/AccountScreen";
+import LeaderboardScreen from "./components/LeaderboardScreen";
+import ToolboxScreen from "./components/ToolboxScreen";
+import HelpScreen from "./components/HelpScreen";
+import SettingsScreen from "./components/SettingsScreen";
+import { ModalProvider } from "./context/modal-context";
+import TheGameScreen from "./components/TheGameScreen";
+import { Modal } from "./components/Modal";
 
 const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
 // const App = () => {
@@ -101,41 +107,60 @@ const App = ({ sdk }: { sdk: SDK<SchemaType> }) => {
         <MobileResponsiveWarning />
       ) : (
         <>
-          <StarknetProvider>
-            <GameContext.Provider
-              value={{
-                gameState: gameState,
-                setGameData: setGameData,
-                options: options,
-                setGameOptions: setGameOptions,
-              }}
-            >
-              <BoardContext.Provider value={{ board, toggleBoard }}>
-                <ColorProvider>
-                  <DiceProvider>
-                    <GameLayout>
-                      <Routes>
-                        <Route
-                          path="/"
-                          element={<HomeScreen />}
-                        />
-                        <Route
-                          path="/account"
-                          element={<AccountScreen />}
-                        />
-                        <Route path="/settings" element={<Settings />} />
-                        <Route
-                          path="/start"
-                          element={<StartGameScreen />}
-                        />
-                      </Routes>
-                    </GameLayout>
-                  </DiceProvider>
-                </ColorProvider>
-              </BoardContext.Provider>
-            </GameContext.Provider>
-            <ToastContainer position="bottom-right" closeButton={<img src={toastBtn} className="w-4 h-4" alt="close-btn" />} />
-          </StarknetProvider>
+          <ModalProvider>
+            <StarknetProvider>
+              <GameContext.Provider
+                value={{
+                  gameState: gameState,
+                  setGameData: setGameData,
+                  options: options,
+                  setGameOptions: setGameOptions,
+                }}
+              >
+                <BoardContext.Provider value={{ board, toggleBoard }}>
+                  <ColorProvider>
+                    <DiceProvider>
+                      <GameLayout>
+                        <Routes>
+                          <Route
+                            path="/"
+                            element={<HomeScreen />}
+                          />
+                          <Route
+                            path="/thestart"
+                            element={<TheGameScreen />}
+                          />
+                          <Route
+                            path="/account"
+                            element={<AccountScreen />}
+                          />
+                          <Route
+                            path="/help"
+                            element={<HelpScreen />}
+                          />
+                          <Route
+                            path="/toolbox"
+                            element={<ToolboxScreen />}
+                          />
+                          <Route
+                            path="/leaderboard"
+                            element={<LeaderboardScreen />}
+                          />
+                          <Route path="/settings" element={<SettingsScreen />} />
+                          <Route
+                            path="/start"
+                            element={<StartGameScreen />}
+                          />
+                        </Routes>
+                      </GameLayout>
+                    </DiceProvider>
+                  </ColorProvider>
+                </BoardContext.Provider>
+              </GameContext.Provider>
+              <ToastContainer position="bottom-right" closeButton={<img src={toastBtn} className="w-4 h-4" alt="close-btn" />} />
+            </StarknetProvider>
+            <Modal />
+          </ModalProvider>
         </>
       )}
     </Router>
